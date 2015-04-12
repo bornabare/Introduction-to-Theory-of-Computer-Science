@@ -1,3 +1,5 @@
+package Lab1;
+
 import java.io.*;
 import java.util.*;
 
@@ -29,29 +31,41 @@ public class SimEnka {
 
 
         // 1. red - citanje ulaznih nizova
-        buffer = reader.readLine();
+        do {
+            buffer = reader.readLine();
+        } while (buffer==null);
         String[] ulNizovi =  buffer.split("\\|");          //odvajanje ulaznih nizova znakom |
         ukupniBrojAutomata = ulNizovi.length;
 
         // 2. red - citanje skupova stanja
-        buffer = reader.readLine();
+        do {
+            buffer = reader.readLine();
+        } while (buffer==null);
         String[] skupStanja = buffer.split(",");
 
         // 3. red - citanje skupa simbola
-        buffer = reader.readLine();
+        do {
+            buffer = reader.readLine();
+        } while (buffer==null);
         String[] skupSimbola = buffer.split(",");
 
         // 4. red  - citanje prihvatljivih stanja
-        buffer = reader.readLine();
+        do {
+            buffer = reader.readLine();
+        } while (buffer==null);
         String[] prihvatljivaStanja = buffer.split(",");
 
         // 5. red - citanje pocetnih stanja
-        buffer = reader.readLine();
+        do {
+            buffer = reader.readLine();
+        } while (buffer==null);
         String[] pocetnaStanja = buffer.split(",");
 
         // citanje preostalih prijelaza do kraja datoteke
-        buffer = reader.readLine();
-        while (!buffer.isEmpty()) {
+        do {
+            buffer = reader.readLine();
+        } while (buffer==null);
+        while (buffer != null) {
             prijelazi.add (new Prijelaz(buffer));
             buffer = reader.readLine();
         }
@@ -72,10 +86,9 @@ public class SimEnka {
             for (String simbol : ulSimboli) {
                 ulazniSimboli.add(simbol);
             }
-            Automat automat = new Automat(ulazniSimboli, Arrays.asList(pocetnaStanja));
+
+            Automat automat = new Automat(ulazniSimboli, new ArrayList<String>(Arrays.asList(pocetnaStanja)));
             automat.obaviPosao();
         }
     }
-
-
 }
