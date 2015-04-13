@@ -1,8 +1,5 @@
 package Lab2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by borna on 3/26/15.
@@ -10,7 +7,7 @@ import java.util.List;
 public class Prijelaz {
     private String ulaznoStanje;
     private String pobuda;
-    private List<String> novaStanja = new ArrayList<String>();
+    private String novoStanje;
     private String izraz;
 
     public Prijelaz(String izraz) {
@@ -25,7 +22,7 @@ public class Prijelaz {
         pobuda=livaStrana[1];
         String[] stanja = prvo[1].split(",");
         for (String s : stanja) {
-            novaStanja.add(s);
+            novoStanje = s;
         }
     }
 
@@ -37,8 +34,12 @@ public class Prijelaz {
         return pobuda;
     }
 
-    public List<String> getNovaStanja() {
-        return novaStanja;
+    public String getNovoStanje() {
+        return novoStanje;
+    }
+
+    public void setNovoStanje(String novoStanje) {
+        this.novoStanje = novoStanje;
     }
 
     @Override
@@ -52,6 +53,6 @@ public class Prijelaz {
 
     @Override
     public String toString() {
-        return ulaznoStanje + "," + pobuda + "->" + novaStanja.toArray()[0] + "\n";
+        return ulaznoStanje + "," + pobuda + "->" + novoStanje + "\n";
     }
 }
