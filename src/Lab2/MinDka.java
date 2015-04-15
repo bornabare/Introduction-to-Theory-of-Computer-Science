@@ -128,7 +128,7 @@ public class MinDka {
     }
 
     private static void brisiIstovjetnaStanja() {
-        Map<String, String> mapaStanja = new HashMap<String, String>();
+        HashMap<String, String> mapaStanja = new HashMap<String, String>();
         pocetniPrijelazi = new ArrayList<Prijelaz>(noviPrijelazi);
         pocetnaPrihvatljivaStanja = new ArrayList<String>(novaPrihvatljivaStanja);
         pocetnaStanja = new ArrayList<String>(novaDohvatljivaStanja);
@@ -153,22 +153,23 @@ public class MinDka {
             for (int j = i+1 ; j < poljePocetnihStanja.length; j++) {
                 String stanje1 = poljePocetnihStanja[i];
                 String stanje2 = poljePocetnihStanja[j];
-                if ( stanje1.equals(stanje2) ) {
-                    mapaStanja.replace(stanje1+","+stanje2, "X");
+                if (stanje1.equals(stanje2)) {
+                    mapaStanja.replace(stanje1 + "," + stanje2, "X");
+                } else if ((!pocetnaPrihvatljivaStanja.contains(stanje1) && pocetnaPrihvatljivaStanja.contains(stanje2)) || (pocetnaPrihvatljivaStanja.contains(stanje1) && !pocetnaPrihvatljivaStanja.contains(stanje2))) {
+                    mapaStanja.replace(stanje1 + "," + stanje2, "X");
                 }
-                else if ((!pocetnaPrihvatljivaStanja.contains(stanje1) && pocetnaPrihvatljivaStanja.contains(stanje2)) || (pocetnaPrihvatljivaStanja.contains(stanje1) && !novaPrihvatljivaStanja.contains(stanje2))) {
-                    mapaStanja.replace(stanje1+","+stanje2, "X");
-                }
-                    /**
-                     * Po cijeloj hash tablici valja proci i ispitati jesu li stanja istovjetna na nacin da se pregledava
-                     * jesu li za svaku pobudu konacna stanja jednaka. Ako nisu odmah se stavlja X
-                     */
+                /**
+                 * Po cijeloj hash tablici valja proci i ispitati jesu li stanja istovjetna na nacin da se pregledava
+                 * jesu li za svaku pobudu konacna stanja jednaka. Ako nisu odmah se stavlja X
+                 */
+
                 else {
-                        if (istovjetna(stanje1, stanje2)){
-                            mapaStanja.replace(stanje1+","+stanje2, "1");
-                        } else {
-                            mapaStanja.replace(stanje1+","+stanje2, "X");
-                        }
+
+                    if (istovjetna(stanje1, stanje2, new ArrayList<String>(), mapaStanja)){
+                        mapaStanja.replace(stanje1+","+stanje2, "1");
+                    } else {
+                        mapaStanja.replace(stanje1+","+stanje2, "X");
+                    }
                 }
 
             }
@@ -223,30 +224,36 @@ public class MinDka {
         }
     }
 
-    private static boolean istovjetna(String stanje1, String stanje2) {
-        String novoStanje1 = new String("");
-        String novoStanje2 = new String("");
+    private static boolean istovjetna(String stanje1, String stanje2, List<String>ispitivanaStanja, HashMap<String, String> mapaStanja) {
 
-        if (stanje1.equals(stanje2)){
+        if (ispitivanaStanja.contains(stanje1+","+stanje2)) return false;
+
+        if (stanje1.equals(stanje2)) {
             return true;
         }
-        for (String simbol : ulSimboli) {
-            for (Prijelaz prijelaz : noviPrijelazi) {
-                if (prijelaz.getUlaznoStanje().equals(stanje1) && prijelaz.getPobuda().equals(simbol)) {
+
+        if (stanje1.equals("") || stanje2.equals("")) return false;
+
+        for (String pobuda : ulSimboli) {
+            String novoStanje1 = new String("");
+            String novoStanje2 = new String("");
+
+            for (Prijelaz prijelaz : pocetniPrijelazi) {
+                if (prijelaz.getUlaznoStanje().equals(stanje1) && prijelaz.getPobuda().equals(pobuda)) {
                     novoStanje1 = prijelaz.getNovoStanje();
                 }
-                if (prijelaz.getUlaznoStanje().equals(stanje2) && prijelaz.getPobuda().equals(simbol)) {
+                if (prijelaz.getUlaznoStanje().equals(stanje2) && prijelaz.getPobuda().equals(pobuda)) {
                     novoStanje2 = prijelaz.getNovoStanje();
                 }
             }
+
+            ispitivanaStanja.add(stanje1+","+stanje2);
+            if (!istovjetna(novoStanje1, novoStanje2, ispitivanaStanja, mapaStanja)) return false;
         }
 
-        if ( !(novoStanje1.equals("") || novoStanje2.equals("")) ) {
-            mapaIstovjetnosti.put(novoStanje1+","+novoStanje2, );
-        }
-        else {
-            return false;
-        }
+        //istovjetna
+        mapaStanja.replace(stanje1+","+stanje2, "1");
+        return true;
     }
 
 
