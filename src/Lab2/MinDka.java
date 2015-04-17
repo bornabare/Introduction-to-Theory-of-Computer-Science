@@ -162,20 +162,23 @@ public class MinDka {
                  * Po cijeloj hash tablici valja proci i ispitati jesu li stanja istovjetna na nacin da se pregledava
                  * jesu li za svaku pobudu konacna stanja jednaka. Ako nisu odmah se stavlja X
                  */
-
-                else {
-
-                    if (istovjetna(stanje1, stanje2, new ArrayList<String>(), mapaStanja)){
-                        mapaStanja.replace(stanje1+","+stanje2, "1");
-                    } else {
-                        mapaStanja.replace(stanje1+","+stanje2, "X");
-                    }
-                }
-
             }
-            Collections.sort(novaDohvatljivaStanja);
-            Collections.sort(novaPrihvatljivaStanja);
         }
+
+        for (int i=0; i < poljePocetnihStanja.length; i++) {
+            for (int j = i+1 ; j < poljePocetnihStanja.length; j++) {
+                String stanje1 = poljePocetnihStanja[i];
+                String stanje2 = poljePocetnihStanja[j];
+                if ((mapaStanja.get(stanje1+","+stanje2) == null) && istovjetna(stanje1, stanje2, new ArrayList<String>(), mapaStanja)) {
+                    mapaStanja.replace(stanje1 + "," + stanje2, "1"); //ne treba ova linija
+                } else {
+                    mapaStanja.replace(stanje1 + "," + stanje2, "X");
+                }
+            }
+        }
+
+        Collections.sort(novaDohvatljivaStanja);
+        Collections.sort(novaPrihvatljivaStanja);
 
         /**
          * tablica sa istovjetnosti postoji! Sada treba izbrisati leksikografski drugo stanje. Dakle s1 zadrzati a s2 izbrisati
@@ -226,7 +229,7 @@ public class MinDka {
 
     private static boolean istovjetna(String stanje1, String stanje2, List<String>ispitivanaStanja, HashMap<String, String> mapaStanja) {
 
-        if (ispitivanaStanja.contains(stanje1+","+stanje2)) return false;
+        if (ispitivanaStanja.contains(stanje1+","+stanje2)) return true;
 
         if (stanje1.equals(stanje2)) {
             return true;
@@ -246,13 +249,19 @@ public class MinDka {
                     novoStanje2 = prijelaz.getNovoStanje();
                 }
             }
+            if (novoStanje1.compareTo(novoStanje2) > 0 ) {
+                String tmp = novoStanje1;
+                novoStanje1 = novoStanje2;
+                novoStanje2 = tmp;
+            }
 
-            ispitivanaStanja.add(stanje1+","+stanje2);
+            if (!ispitivanaStanja.contains(stanje1+","+stanje2)){
+                ispitivanaStanja.add(stanje1+","+stanje2);
+            }
             if (!istovjetna(novoStanje1, novoStanje2, ispitivanaStanja, mapaStanja)) return false;
         }
 
         //istovjetna
-        mapaStanja.replace(stanje1+","+stanje2, "1");
         return true;
     }
 
